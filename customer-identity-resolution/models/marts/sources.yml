@@ -1,0 +1,34 @@
+version: 2
+
+sources:
+  - name: kanoniv
+    description: Kanoniv resolved identity tables (written by reconcile.py)
+    database: KANONIV_IDENTITY
+    schema: KANONIV_RESOLVED
+    tables:
+      - name: resolved_entities
+        description: Golden customer records with canonical fields
+      - name: entity_crosswalk
+        description: Source record to kanoniv_id mapping
+
+models:
+  - name: resolved_customers
+    description: Golden customer records from identity resolution
+    columns:
+      - name: kanoniv_id
+        description: Deterministic hash ID for the resolved entity
+        tests: [not_null, unique]
+
+  - name: customer_crosswalk
+    description: Maps every source record to its resolved kanoniv_id
+    columns:
+      - name: source_id
+        tests: [not_null]
+      - name: kanoniv_id
+        tests: [not_null]
+
+  - name: customer_360
+    description: Customer 360 view with source coverage metrics
+    columns:
+      - name: kanoniv_id
+        tests: [not_null, unique]

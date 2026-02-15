@@ -1,0 +1,197 @@
+# Kanoniv Identity Resolution Spec
+#
+# This spec tells Kanoniv how to match and merge records across
+# 5 staged source tables. The dbt staging models (stg_*) handle
+# all field normalization before records reach the engine.
+#
+# Run: pip install kanoniv && python reconcile.py
+
+api_version: kanoniv/v2
+identity_version: customer_v1
+
+metadata:
+  name: Customer Identity Resolution
+  description: Cross-source customer resolution across 5 systems
+  owner: data-engineering
+  tags: [production, pii-source, identity]
+
+entity:
+  name: customer
+  description: Unified customer entity
+  compliance:
+    frameworks: [gdpr]
+    pii_fields: [email, phone, first_name, last_name]
+
+# Sources point to dbt staging views in Snowflake.
+# The reconcile.py script reads these via Source.from_warehouse().
+sources:
+  crm_contacts:
+    adapter: snowflake
+    location: staging.stg_crm_contacts
+    primary_key: external_id
+    schema:
+      email: { type: string, pii: true }
+      phone: { type: string, pii: true }
+      first_name: { type: string, pii: true }
+      last_name: { type: string, pii: true }
+      company_name: { type: string }
+    attributes:
+      first_name: first_name
+      last_name: last_name
+      email: email
+      phone: phone
+      company_name: company_name
+    tags: [production, crm]
+
+  billing_accounts:
+    adapter: snowflake
+    location: staging.stg_billing_accounts
+    primary_key: external_id
+    schema:
+      email: { type: string, pii: true }
+      first_name: { type: string, pii: true }
+      last_name: { type: string, pii: true }
+      company_name: { type: string }
+    attributes:
+      first_name: first_name
+      last_name: last_name
+      email: email
+      company_name: company_name
+    tags: [production, billing]
+
+  support_users:
+    adapter: snowflake
+    location: staging.stg_support_users
+    primary_key: external_id
+    schema:
+      email: { type: string, pii: true, nullable: true }
+      phone: { type: string, pii: true, nullable: true }
+      first_name: { type: string, pii: true }
+      last_name: { type: string, pii: true }
+      company_name: { type: string }
+    attributes:
+      first_name: first_name
+      last_name: last_name
+      email: email
+      phone: phone
+      company_name: company_name
+    tags: [production, support]
+
+  app_signups:
+    adapter: snowflake
+    location: staging.stg_app_signups
+    primary_key: external_id
+    schema:
+      email: { type: string, pii: true }
+      first_name: { type: string, pii: true, nullable: true }
+      last_name: { type: string, pii: true, nullable: true }
+    attributes:
+      first_name: first_name
+      last_name: last_name
+      email: email
+    tags: [production, app]
+
+  partner_leads:
+    adapter: snowflake
+    location: staging.stg_partner_leads
+    primary_key: external_id
+    schema:
+      email: { type: string, pii: true, nullable: true }
+      first_name: { type: string, pii: true, nullable: true }
+      last_name: { type: string, pii: true, nullable: true }
+      company_name: { type: string }
+    attributes:
+      first_name: first_name
+      last_name: last_name
+      email: email
+      company_name: company_name
+    tags: [production, partner]
+
+blocking:
+  strategy: composite
+  keys:
+    - [email]
+    - [phone]
+    - [last_name, first_name]
+    - [company_name, last_name]
+
+# Minimal rule required by Cloud API validator.
+# Actual scoring is driven by the Fellegi-Sunter fields below.
+rules:
+  - type: exact
+    name: email_exact
+    field: email
+    weight: 1.0
+
+decision:
+  scoring:
+    strategy: fellegi_sunter
+    training:
+      method: em
+      estimate_u: random_sampling
+      max_random_pairs: 1000000
+      max_iterations: 25
+      convergence_threshold: 0.001
+
+    fields:
+      - name: email
+        comparator: exact
+        weight: 2.0
+        m_probability: 0.95
+        u_probability: 0.001
+        normalizer: email
+
+      - name: phone
+        comparator: exact
+        weight: 1.5
+        m_probability: 0.85
+        u_probability: 0.005
+        normalizer: phone
+
+      - name: first_name
+        comparator: jaro_winkler
+        weight: 1.0
+        m_probability: 0.85
+        u_probability: 0.05
+        normalizer: nickname
+
+      - name: last_name
+        comparator: jaro_winkler
+        weight: 1.0
+        m_probability: 0.88
+        u_probability: 0.02
+        normalizer: name
+
+      - name: company_name
+        comparator: jaro_winkler
+        weight: 1.0
+        m_probability: 0.80
+        u_probability: 0.02
+        normalizer: generic
+
+    thresholds:
+      match: 8.0
+      possible: 4.0
+      non_match: -5.0
+
+  thresholds:
+    match: 0.9
+    review: 0.7
+
+  conflict_strategy: prefer_high_confidence
+
+survivorship:
+  default: source_priority
+  overrides:
+    - field: email
+      strategy: most_complete
+    - field: phone
+      strategy: source_priority
+      priority: [crm_contacts, support_users]
+    - field: first_name
+      strategy: most_complete
+    - field: last_name
+      strategy: most_complete
+    - field: company_name
+      strategy: source_priority
+      priority: [crm_contacts, billing_accounts, partner_leads]

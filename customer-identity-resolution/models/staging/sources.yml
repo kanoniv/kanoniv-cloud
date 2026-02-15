@@ -1,0 +1,17 @@
+version: 2
+
+sources:
+  - name: raw
+    database: KANONIV_IDENTITY
+    schema: RAW
+    tables:
+      - name: crm_contacts
+      - name: crm_companies
+      - name: billing_accounts
+      - name: billing_invoices
+      - name: support_users
+      - name: support_tickets
+      - name: app_signups
+      - name: app_events
+      - name: partner_leads
+      - name: partner_referrals

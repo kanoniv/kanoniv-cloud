@@ -1,0 +1,28 @@
+# dbt
+target/
+dbt_packages/
+logs/
+.user.yml
+package-lock.yml
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+*.egg-info/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.swp
+
+# Credentials (never commit these)
+.env
+*.pem
+profiles.yml

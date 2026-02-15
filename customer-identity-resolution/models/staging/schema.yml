@@ -1,0 +1,38 @@
+version: 2
+
+models:
+  - name: stg_crm_contacts
+    description: Staged CRM contacts with normalized email/phone/name fields
+    columns:
+      - name: external_id
+        tests: [not_null, unique]
+      - name: email
+        tests: [not_null]
+
+  - name: stg_billing_accounts
+    description: Staged billing accounts with parsed first/last name from account_name
+    columns:
+      - name: external_id
+        tests: [not_null, unique]
+      - name: email
+        tests: [not_null]
+
+  - name: stg_support_users
+    description: Staged support users with parsed display_name into first/last
+    columns:
+      - name: external_id
+        tests: [not_null, unique]
+
+  - name: stg_app_signups
+    description: Staged app signups with normalized email
+    columns:
+      - name: external_id
+        tests: [not_null, unique]
+      - name: email
+        tests: [not_null]
+
+  - name: stg_partner_leads
+    description: Staged partner leads with normalized fields
+    columns:
+      - name: external_id
+        tests: [not_null, unique]
