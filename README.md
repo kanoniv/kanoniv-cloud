@@ -8,7 +8,8 @@ Each example is a self-contained project that demonstrates a common identity res
 
 | Example | Description | Sources | Records |
 |---------|-------------|---------|---------|
-| [customer-identity-resolution](./customer-identity-resolution/) | Unify customers across 5 systems using dbt + Snowflake + Kanoniv Cloud | CRM, Billing, Support, App, Partner | ~6,500 |
+| [customer-identity-resolutions](./customer-identity-resolutions/) | Batch identity resolution across 5 systems using dbt + Snowflake + Kanoniv Cloud | CRM, Billing, Support, App, Partner | ~6,500 |
+| [real-time-resolutions](./real-time-resolutions/) | Real-time incremental resolution using `POST /v1/resolve/realtime` (~230ms/record) | CRM, Billing, Support | 6 test records |
 
 ## How Kanoniv Cloud Works
 

@@ -1,0 +1,24 @@
+name: kanoniv_realtime
+version: '1.0.0'
+profile: kanoniv_realtime
+
+model-paths: ["models"]
+macro-paths: ["macros"]
+seed-paths: ["data"]
+
+seeds:
+  kanoniv_realtime:
+    +schema: raw
+
+clean-targets:
+  - target
+  - dbt_packages
+
+models:
+  kanoniv_realtime:
+    staging:
+      +materialized: view
+      +schema: staging
+    marts:
+      +materialized: table
+      +schema: resolved

@@ -1,0 +1,7 @@
+support_user_id,email,display_name,phone,company,created_at
+S001,bob@gmail.com,Bob S,5551234567,Acme,2025-03-01
+S002,,Alice Johnson,5558889999,TechStart,2025-03-15
+S003,charlie@hotmail.com,Charlie Brown,5559876543,,2025-05-01
+S004,dana@work.com,Dana Lee,,Brightside,2025-06-01
+S005,eve.m@outlook.com,Eve Martinez,5557778888,Cloudworks,2025-07-15
+S006,henry@mail.com,Henry Anderson,5556667777,Summit,2025-09-01

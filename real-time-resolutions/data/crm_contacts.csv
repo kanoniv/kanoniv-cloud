@@ -1,0 +1,9 @@
+crm_contact_id,email,first_name,last_name,phone,company_name,created_at
+C001,bob@gmail.com,Bob,Smith,5551234567,Acme Corp,2025-01-15
+C002,alice@company.com,Alice,Johnson,,TechStart,2025-02-01
+C003,charlie@hotmail.com,Charlie,Brown,5559876543,Peanuts Inc,2025-03-10
+C004,dana@work.com,Dana,Lee,5551112222,Brightside,2025-04-05
+C005,eve@outlook.com,Eve,Martinez,,Cloudworks,2025-05-20
+C006,frank@gmail.com,Frank,Wilson,5553334444,DataDriven,2025-06-12
+C007,grace@company.com,Grace,Taylor,5554445555,TechStart,2025-07-01
+C008,henry@mail.com,Henry,Anderson,5556667777,Summit LLC,2025-08-15

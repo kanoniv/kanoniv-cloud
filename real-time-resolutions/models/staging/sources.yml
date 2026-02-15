@@ -1,0 +1,10 @@
+version: 2
+
+sources:
+  - name: raw
+    database: KANONIV_IDENTITY
+    schema: RAW
+    tables:
+      - name: crm_contacts
+      - name: billing_accounts
+      - name: support_users

@@ -1,0 +1,7 @@
+billing_account_id,email,account_name,company_name,created_at
+B001,bob@work.com,"Smith, Robert",Acme Corp,2025-02-10
+B002,alice@company.com,"Johnson, Alice",TechStart,2025-02-15
+B003,charlie.brown@hotmail.com,"Brown, Charles",Peanuts Inc,2025-04-01
+B004,dana.lee@work.com,"Lee, Dana",Brightside,2025-05-01
+B005,frank.wilson@gmail.com,"Wilson, Frank",DataDriven,2025-07-10
+B006,grace@company.com,"Taylor, Grace",TechStart,2025-08-01
